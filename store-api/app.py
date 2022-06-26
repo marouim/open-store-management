@@ -87,6 +87,7 @@ def get_logs():
         )
 
         affected_devices = []
+        affected_devices_text = ""
 
         job_host_summaries = json.loads(r.content)["results"]
 
@@ -95,12 +96,14 @@ def get_logs():
                 "device": hs["summary_fields"]["host"]["name"],
                 "status": hs["summary_fields"]["job"]["status"]
             })
+            affected_devices_text += hs["summary_fields"]["host"]["name"] + ","
 
         logs.append({
             "id": job["id"],
             "name": job["name"],
             "created": job["created"],
-            "affected_devices": affected_devices
+            "affected_devices": affected_devices,
+            "affected_devices_text": affected_devices_text
         })
 
     return (jsonify(logs), r.status_code)
