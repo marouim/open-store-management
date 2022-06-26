@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire">
-    <v-navigation-drawer
+    <!-- <v-navigation-drawer
       v-model="drawer"
       app
     >
@@ -31,7 +31,7 @@
         </v-list-item>
       </v-list>
 
-    </v-navigation-drawer>
+    </v-navigation-drawer> -->
 
     <v-app-bar app dark flat>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
@@ -42,6 +42,10 @@
     <v-main>
       <router-view></router-view>
     </v-main>
+
+    <v-footer>
+      <v-card>test</v-card>
+    </v-footer>
   </v-app>
 </template>
 
