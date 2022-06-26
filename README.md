@@ -2,6 +2,8 @@
 
 Store management powered by Ansible Automation Platform.
 
+![image info](./screenshot.png)
+
 ### User Interface (store-ui)
 
 The user interface leverages VueJS framework to provide real time dynamic experience. 
