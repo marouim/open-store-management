@@ -54,6 +54,57 @@ def healtz():
     return ('', r.status_code)
 
 
+@app.route("/api/logs", methods = ['GET'])
+def get_logs():
+    # get labels (used for actions)
+    r = requests.get(
+        url=AAP_BASE_URL + API_BASE_URL + "/labels", 
+        auth=HTTPBasicAuth(AAP_USERNAME, AAP_PASSWORD)
+    )
+
+    labels = json.loads(r.content)["results"]
+    action_label_id = 0
+
+    for label in labels:
+        if label["name"] == "store-action":
+            action_label_id = label["id"]
+            break
+    
+    r = requests.get(
+        url=AAP_BASE_URL + API_BASE_URL + "/jobs?labels=" + str(action_label_id), 
+        auth=HTTPBasicAuth(AAP_USERNAME, AAP_PASSWORD)
+    )
+
+    jobs = json.loads(r.content)["results"]
+    logs = []
+
+    for job in jobs:
+
+        r = requests.get(
+            url=AAP_BASE_URL + API_BASE_URL + "/jobs/" + str(job["id"]) + "/job_host_summaries", 
+            auth=HTTPBasicAuth(AAP_USERNAME, AAP_PASSWORD)
+        )
+
+        affected_devices = []
+
+        job_host_summaries = json.loads(r.content)["results"]
+
+        for hs in job_host_summaries:
+            affected_devices.append({
+                "device": hs["summary_fields"]["host"]["name"],
+                "status": hs["summary_fields"]["job"]["status"]
+            })
+
+        logs.append({
+            "id": job["id"],
+            "name": job["name"],
+            "created": job["created"],
+            "affected_devices": affected_devices
+        })
+
+    return (jsonify(logs), r.status_code)
+
+
 @app.route("/api/storetree")
 def storeTree():
     print("Get store tree")
