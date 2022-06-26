@@ -6,6 +6,7 @@ import os
 import yaml
 
 
+
 # Need to inject from Secret
 # AAP_BASE_URL = https://aap-ansible-automation-platform.apps.hiybv6c8.eastus.aroapp.io
 # AAP_USERNAME = 
