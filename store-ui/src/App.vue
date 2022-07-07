@@ -4,7 +4,7 @@
       <StoreList></StoreList>
     </v-navigation-drawer>
 
-    <v-app-bar app dark flat>
+    <v-app-bar app flat>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title>{{ $route.meta.displayName }}</v-toolbar-title>
@@ -14,11 +14,11 @@
 
     <v-main>
       <StoreDetail></StoreDetail>
-      
+      <LogList></LogList>>
     </v-main>
 
     <v-footer>
-      <LogList></LogList>>
+      
     </v-footer>
   </v-app>
 </template>
