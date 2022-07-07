@@ -150,6 +150,7 @@ def storeTree():
 
                 for action_label in action_labels:
                     # find label ID
+                    action_label_id = 0
                     for label in labels:
                         if label["name"] == action_label:
                             action_label_id = label["id"]
