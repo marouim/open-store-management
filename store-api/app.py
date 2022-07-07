@@ -24,7 +24,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-  return jsonify({"store-api": "Open Store Management"})
+  return jsonify({"store-api": "Open Store Management v0.4444"})
 
 # @app.route("/api/healtz", methods = ['POST'])
 # def notif():
