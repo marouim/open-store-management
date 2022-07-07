@@ -1,37 +1,8 @@
 <template>
-  <v-app id="inspire">
-    <!-- <v-navigation-drawer
-      v-model="drawer"
-      app
-    >
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title >
-            Applications
-          </v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-
-      <v-divider></v-divider>
-
-      <v-list
-        dense
-        nav
-      >
-        <v-list-item
-          link
-        >
-          <v-list-item-icon>
-            <v-icon>mdi-view-dashboard</v-icon>
-          </v-list-item-icon>
-
-          <v-list-item-content>
-            <v-list-item-title >Store list</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-
-    </v-navigation-drawer> -->
+  <v-app>
+    <v-navigation-drawer app permanent v-model="drawer">
+      <StoreList></StoreList>
+    </v-navigation-drawer>
 
     <v-app-bar app dark flat>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
@@ -39,27 +10,35 @@
       <v-toolbar-title>{{ $route.meta.displayName }}</v-toolbar-title>
     </v-app-bar>
 
+
+
     <v-main>
-      <router-view></router-view>
+      <StoreDetail></StoreDetail>
+      
     </v-main>
 
     <v-footer>
-      <v-card>test</v-card>
+      <LogList></LogList>>
     </v-footer>
   </v-app>
 </template>
 
 <script>
-
+import LogList from "./components/LogList.vue";
+import StoreDetail from "./components/StoreDetail.vue"
+import StoreList from "./components/StoreList.vue"
 
 export default {
   name: 'App',
 
   components: {
+    LogList,
+    StoreDetail,
+    StoreList
   },
 
   data: () => ({
-    //
+    drawer: null
   }),
 };
 </script>

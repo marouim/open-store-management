@@ -1,81 +1,36 @@
 <template>
   <v-container>
-    <v-label>Store list </v-label>
+    <v-text-field
+      label="Search"
+    ></v-text-field>
+    <v-list shaped>
 
+      <v-list-item-group
+        v-model="selectedStore"
+        color="primary"
+      >
 
-    <v-expansion-panels>
-      <v-expansion-panel
-        v-for="(t,i) in storeTree"
-        :key="i"
+        <v-list-item
+          v-for="(store, i) in storeTree"
+          :key="i"
         >
-
-        <v-expansion-panel-header>
-          <v-card flat>
-            <v-card-title>{{ t.name }}-{{ t.variables.storeName }}</v-card-title>
-            <v-card-subtitle>{{ t.variables.storeAddress }}</v-card-subtitle>
-          </v-card>
-        </v-expansion-panel-header>
-
-        <v-expansion-panel-content>
-          <v-list >
-            <template v-for="(host,i) in t.hosts">
-              <v-list-item :key="i" v-on:click="t()">
-                <v-list-item-icon>
-                  <v-icon >{{ host.variables.icon }}</v-icon>
-                </v-list-item-icon>
-
-                <v-list-item-content>
-                  <v-list-item-title v-text="host.name"></v-list-item-title>
-                </v-list-item-content>
-                <v-list-item-action>
-
-                  <v-menu
-                    open-on-hover
-                    offset-y
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        color="primary"
-                        dark
-                        v-bind="attrs"
-                        v-on="on"
-                        icon
-                      >
-                        <v-icon>mdi-hammer-screwdriver</v-icon>
-                      </v-btn>
-                    </template>
-
-                    <v-list>
-                      <v-list-item
-                        v-for="(item, index) in host.actions"
-                        :key="index"
-                        v-on:click="t()"
-                      >
-                        <v-list-item-title>{{ item.name }}</v-list-item-title>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
-                </v-list-item-action>
-              </v-list-item>
-            </template>
-          </v-list>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
-
-
-
+          <v-list-item-content>
+            <v-list-item-title v-text="store.name + ' - ' + store.variables.storeName"></v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list-item-group>
+    </v-list>
   </v-container>
 </template>
 
 <script>
   import { mapGetters, mapActions } from "vuex";
-  
+
   export default {
     name: 'StoreList',
 
     methods: {
-      ...mapActions(["getStoreTree"]),
+      ...mapActions(["getStoreTree", "launchAction", "setSelectedStoreId"]),
 
       t() {
         
@@ -83,13 +38,19 @@
     },
 
     computed: {
-      ...mapGetters(["storeTree"])
+      ...mapGetters(["storeTree", "selectedStoreId"])
     },
 
     data: () => ({
-      intervalGetStoreList: 0
+      intervalGetStoreList: 0,
+      selectedStore: -1
     }),
 
+    watch: {
+      selectedStore: function(){
+        this.setSelectedStoreId(this.selectedStore)
+      }
+    },
     mounted() {
       this.getStoreTree();
 
