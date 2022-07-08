@@ -1,7 +1,10 @@
 <template>
   <v-container>
-    <v-card>
+    <v-card flat>
       <v-card-title>{{ storeTree[selectedStoreId].variables.storeName }}</v-card-title>
+      <v-card-subtitle>
+        {{ storeTree[selectedStoreId].variables.storeAddress }} <br> {{ storeTree[selectedStoreId].variables.storeType }}
+      </v-card-subtitle>
 
       <v-list >
         <template v-for="(host,i) in storeTree[selectedStoreId].hosts">

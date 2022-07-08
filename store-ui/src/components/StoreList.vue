@@ -43,7 +43,7 @@
 
     data: () => ({
       intervalGetStoreList: 0,
-      selectedStore: -1
+      selectedStore: 0
     }),
 
     watch: {

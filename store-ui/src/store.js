@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import storeApi from "./api/storeApi";
+import jwt_decode from "jwt-decode";
 
 Vue.use(Vuex);
 
@@ -9,12 +10,15 @@ const READ_STORE_TREE_OK = "READ_STORE_TREE_OK"
 const READ_LOGS_OK = "READ_LOGS_OK"
 const LAUNCH_ACTION_OK = "LAUNCH_ACTION_OK"
 const SELECT_STORE = "SELECT_STORE"
+const SET_KEYCLOAK = "SET_KEYCLOAK"
 
 const state = {
   storeTree: [],
   logs: [],
   apiCommError: false,
-  selectedStoreId: -1
+  selectedStoreId: 0,
+  keycloak: null,
+  jwt_token: null
 };
 
 const mutations = {
@@ -35,6 +39,11 @@ const mutations = {
 
   [SELECT_STORE](state, storeId) {
     state.selectedStoreId = storeId;
+  },
+
+  [SET_KEYCLOAK](state, keycloak) {
+    state.keycloak = keycloak
+    state.jwt_token = jwt_decode(keycloak.token)
   }
 
 };
@@ -75,6 +84,14 @@ const getters = {
 
   selectedStoreId() {
     return state.selectedStoreId;
+  },
+
+  keycloak() {
+    return state.keycloak
+  },
+
+  jwt_token() {
+    return state.jwt_token
   }
 };
 
