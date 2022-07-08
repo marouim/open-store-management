@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: store-ui-git-resource
+spec:
+  params:
+    - name: revision
+      value: main
+    - name: url
+      value: 'https://github.com/marouim/open-store-management.git'
+  type: git

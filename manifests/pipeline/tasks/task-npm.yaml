@@ -1,0 +1,36 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: npm
+spec:
+  steps:
+    - args:
+        - npm install
+      command:
+        - /bin/sh
+        - '-c'
+      image: 'registry.redhat.io/ubi8/nodejs-14:latest'
+      name: npm-install
+      workingDir: /workspace/output/store-ui
+
+    - args:
+        - npm run build
+      command:
+        - /bin/sh
+        - '-c'
+      image: 'registry.redhat.io/ubi8/nodejs-14:latest'
+      name: build
+      resources: {}
+      workingDir: /workspace/output/store-ui
+
+    - args:
+        - cp -R ./dist/* $(workspaces.output.path)
+      command:
+        - /bin/sh
+        - '-c'
+      image: 'registry.redhat.io/ubi8/nodejs-14:latest'
+      name: copy-dist
+      resources: {}
+      workingDir: /workspace/output/store-ui
+  workspaces:
+    - name: output

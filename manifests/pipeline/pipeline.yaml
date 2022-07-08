@@ -1,0 +1,118 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: store-ui
+spec:
+  params:
+    - name: app-name
+      type: string
+      description: Application name
+      default: store-ui
+    - name: git-url
+      type: string
+    - name: git-revision
+      type: string
+    - name: image-repo
+      type: string
+      default: image-registry.openshift-image-registry.svc:5000
+
+  tasks:
+
+    - name: fetch-repository
+      taskRef:
+        name: git-clone
+        kind: ClusterTask
+      workspaces:
+        - name: output
+          workspace: output
+      params:
+        - name: url
+          value: $(params.git-url)
+        - name: subdirectory
+          value: ""
+        - name: deleteExisting
+          value: "true"
+        - name: revision
+          value: $(params.git-revision)
+
+    - name: check-folders
+      runAfter:
+        - fetch-repository
+      taskRef:
+        kind: Task
+        name: check-folders
+      workspaces:
+        - name: output
+          workspace: output
+
+    - name: npm-build
+      runAfter:
+        - check-folders
+      taskRef:
+        kind: Task
+        name: npm
+      workspaces:
+        - name: output
+          workspace: output
+
+    - name: build-image
+      runAfter:
+        - npm-build
+      taskRef:
+        name: openshift-client
+        kind: Task
+      workspaces:
+        - name: output
+          workspace: output
+      params:
+        - name: commands
+          value: |
+              ls $(workspaces.output.path)
+              oc start-build $(params.app-name) --from-dir=$(workspaces.output.path) --wait=true
+
+    # - name: image-scan
+    #   runAfter:
+    #     - build-image
+    #   taskRef:
+    #     name: rox-image-scan
+    #     kind: ClusterTask
+    #   params:
+    #     - name: image
+    #       value: $(params.image-repo)/$(context.pipelineRun.namespace)/$(params.app-name):latest
+    #     - name: rox_api_token
+    #       value: roxsecrets
+    #     - name: rox_central_endpoint
+    #       value: roxsecrets
+    #     - name: output_format
+    #       value: json
+
+    # - name: image-check
+    #   runAfter:
+    #     - image-scan
+    #   taskRef:
+    #     name: rox-image-check
+    #     kind: ClusterTask
+    #   params:
+    #     - name: image
+    #       value: $(params.image-repo)/$(context.pipelineRun.namespace)/$(params.app-name):latest
+    #     - name: rox_api_token
+    #       value: roxsecrets
+    #     - name: rox_central_endpoint
+    #       value: roxsecrets
+
+    - name: promote-image
+      runAfter:
+        - build-image
+      taskRef:
+        name: openshift-client
+        kind: Task
+      workspaces:
+        - name: output
+          workspace: output
+      params:
+        - name: commands
+          value: |
+              oc tag $(params.app-name):latest $(params.app-name):prod
+
+  workspaces:
+    - name: output

@@ -1,0 +1,24 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  labels:
+    build: store-ui
+  name: store-ui
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: store-ui:latest
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    binary: {}
+    type: Binary
+  strategy:
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: nginx:latest
+        namespace: openshift
+    type: Source
