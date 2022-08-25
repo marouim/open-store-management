@@ -1,6 +1,6 @@
 <template>
-  <v-app dark>
-    <v-navigation-drawer app permanent v-model="drawer">
+  <v-app>
+    <v-navigation-drawer app permanent v-model="drawer" dark>
       <StoreList></StoreList>
     </v-navigation-drawer>
 
