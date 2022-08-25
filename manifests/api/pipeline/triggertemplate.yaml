@@ -1,0 +1,47 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: trigger-template-store-api
+spec:
+  params:
+    - name: git-revision
+    - name: git-commit-message
+    - name: git-repo-url
+    - name: git-repo-name
+    - name: content-type
+    - name: pusher-name
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        annotations:
+          pipeline.openshift.io/started-by: mouimet
+        generateName: store-api-
+        labels:
+          tekton.dev/pipeline: store-api
+
+      spec:
+        params:
+          - name: app-name
+            value: store-api
+          - name: git-url
+            value: 'https://github.com/marouim/open-store-management.git'
+          - name: git-revision
+            value: main
+          - name: image-repo
+            value: 'image-registry.openshift-image-registry.svc:5000'
+        pipelineRef:
+          name: store-api
+        resources: []
+        status: null
+        workspaces:
+          - name: output
+            volumeClaimTemplate:
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 5Gi
+                storageClassName: managed-premium
+                volumeMode: Filesystem

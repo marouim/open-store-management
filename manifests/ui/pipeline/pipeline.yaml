@@ -70,39 +70,39 @@ spec:
               ls $(workspaces.output.path)
               oc start-build $(params.app-name) --from-dir=$(workspaces.output.path) --wait=true
 
-    # - name: image-scan
-    #   runAfter:
-    #     - build-image
-    #   taskRef:
-    #     name: rox-image-scan
-    #     kind: ClusterTask
-    #   params:
-    #     - name: image
-    #       value: $(params.image-repo)/$(context.pipelineRun.namespace)/$(params.app-name):latest
-    #     - name: rox_api_token
-    #       value: roxsecrets
-    #     - name: rox_central_endpoint
-    #       value: roxsecrets
-    #     - name: output_format
-    #       value: json
+    - name: image-scan
+      runAfter:
+        - build-image
+      taskRef:
+        name: rox-image-scan
+        kind: ClusterTask
+      params:
+        - name: image
+          value: $(params.image-repo)/$(context.pipelineRun.namespace)/$(params.app-name):latest
+        - name: rox_api_token
+          value: roxsecrets
+        - name: rox_central_endpoint
+          value: roxsecrets
+        - name: output_format
+          value: json
 
-    # - name: image-check
-    #   runAfter:
-    #     - image-scan
-    #   taskRef:
-    #     name: rox-image-check
-    #     kind: ClusterTask
-    #   params:
-    #     - name: image
-    #       value: $(params.image-repo)/$(context.pipelineRun.namespace)/$(params.app-name):latest
-    #     - name: rox_api_token
-    #       value: roxsecrets
-    #     - name: rox_central_endpoint
-    #       value: roxsecrets
+    - name: image-check
+      runAfter:
+        - image-scan
+      taskRef:
+        name: rox-image-check
+        kind: ClusterTask
+      params:
+        - name: image
+          value: $(params.image-repo)/$(context.pipelineRun.namespace)/$(params.app-name):latest
+        - name: rox_api_token
+          value: roxsecrets
+        - name: rox_central_endpoint
+          value: roxsecrets
 
     - name: promote-image
       runAfter:
-        - build-image
+        - image-check
       taskRef:
         name: openshift-client
         kind: Task
