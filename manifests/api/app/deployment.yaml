@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: store-api
+  annotations:
+    image.openshift.io/triggers: >-
+      [{"from":{"kind":"ImageStreamTag","name":"store-api:prod"},"fieldPath":"spec.template.spec.containers[?(@.name==\"store-api\")].image"}]
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: store-api
+  template:
+    metadata:
+      labels:
+        app: store-api
+    spec:
+      containers:
+        - name: store-api
+          image: store-api:prod
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: store-api-connection

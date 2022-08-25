@@ -1,0 +1,29 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: store-api-run
+  labels:
+    app.kubernetes.io/part-of: store-api
+    tekton.dev/pipeline: store-api
+spec:
+  params:
+    - name: app-name
+      value: store-api
+    - name: git-url
+      value: 'https://github.com/marouim/open-store-management.git'
+    - name: git-revision
+      value: main
+  pipelineRef:
+    name: store-api
+  serviceAccountName: pipeline
+  timeout: 1h0m0s
+  workspaces:
+    - name: output
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 5Gi
+          volumeMode: Filesystem

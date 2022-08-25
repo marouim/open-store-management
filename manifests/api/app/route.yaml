@@ -1,17 +1,18 @@
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
-  name: store-ui
+  name: store-api
   labels:
-    type: sharded
+    name: store-api
 spec:
   host: "open-store-management.apps.hiybv6c8.eastus.aroapp.io"
-  path: "/"
+  path: "/api"
   to:
     kind: Service
-    name: store-ui
+    name: store-api
     weight: 100
   port:
     targetPort: 8080
   tls:
     termination: edge
+  wildcardPolicy: None

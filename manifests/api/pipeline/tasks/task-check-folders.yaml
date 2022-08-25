@@ -1,0 +1,16 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: check-folders
+spec:
+  steps:
+    - script: |
+        pwd
+        ls -lah
+        echo allo > test.txt
+        ls -lah
+      image: 'registry.redhat.io/ubi8/nodejs-12:latest'
+      name: check-folders
+      workingDir: /workspace/output
+  workspaces:
+    - name: output
